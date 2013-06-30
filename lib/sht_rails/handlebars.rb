@@ -5,7 +5,8 @@ module ShtRails
 
   module Handlebars
     def self.context(partials = nil)
-      @context = nil unless ActionView::Resolver.caching?
+      # NOTE: not caching the context for now b/c in prod we were losing the registered partials
+      @context = nil # unless ActionView::Resolver.caching?
       @context ||= begin
         context = ::Handlebars::Context.new
         if helpers = Rails.application.assets.find_asset(ShtRails.helper_path)
