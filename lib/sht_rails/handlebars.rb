@@ -9,13 +9,18 @@ module ShtRails
       @context = nil # unless ActionView::Resolver.caching?
       @context ||= begin
         context = ::Handlebars::Context.new
+        runtime = context.instance_variable_get :@js
         if helpers = Rails.application.assets.find_asset(ShtRails.helper_path)
           if ShtRails.ruby_helpers.is_a? Hash
+            
+            # a better way to do this ...
+            # context.register_helper k, v
+
             ShtRails.ruby_helpers.each do |k,v|
-              context.runtime[k] = v
+              runtime[k] = v
             end
           end
-          context.runtime.eval helpers.source
+          runtime.eval helpers.source
         end
         partials.each { |key, value| context.register_partial(key, value) } if partials
         context
